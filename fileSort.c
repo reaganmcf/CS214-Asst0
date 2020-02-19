@@ -1,13 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-typedef struct Node {
-  void* data;
-  Node* next;
-} * Node;
-
-int main(char* argc, char** argv) {
-  // TOSHAN: 
+// TOSHAN: 
   //   - LL helper functions (maybe)
   //   - reading cmd line input
   //      - checking flags
@@ -19,4 +13,12 @@ int main(char* argc, char** argv) {
   //      - quicksort
   //      - insertion sort
   //   -  comparators
+
+typedef struct Node {
+  void* data;
+  Node* next;
+} * Node;
+
+int main(char* argc, char** argv) {
+  
 }
