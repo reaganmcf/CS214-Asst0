@@ -105,6 +105,7 @@ As discussed in lecture, IO is often fairly slow, and file IO is almost the slow
 	
 
 Example: (Addendum 0)
+
 	> ./fileSort -i ./somefile
 	 If "./somefile" contains: hi,there, every,     one
 	 output should be:
