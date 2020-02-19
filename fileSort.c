@@ -2,9 +2,16 @@
 #include<stdlib.h>
 
 int main(char* argc, char** argv) {
-  printf("penis");
-  printf("yum");
-
-  printf("you're actually dumb lmao");
-  return 0;
+  // TOSHAN: 
+  //   - LL helper functions (maybe)
+  //   - reading cmd line input
+  //      - checking flags
+  //      - opening files
+  //   - add all tokens into linked list
+  //
+  // REAGAN:
+  //   - sorting
+  //      - quicksort
+  //      - insertion sort
+  //   -  comparators
 }
