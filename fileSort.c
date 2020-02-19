@@ -3,8 +3,8 @@
 
 typedef struct Node {
   void* data;
-  Node* next;
-} * Node;
+  struct Node* next;
+} Node;
 
 int main(char* argc, char** argv) {
   // TOSHAN: 
