@@ -3,5 +3,6 @@
 
 int main(char* argc, char** argv) {
   printf("penis");
+  printf("yum");
   return 0;
 }
