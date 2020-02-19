@@ -6,7 +6,13 @@ typedef struct Node {
   struct Node* next;
 } Node;
 
-void printLinkedList(Node* head);
+void printLinkedList(void* head);
+
+
+int insertionSort(void* toSort, int (*comparator)(void*, void*));
+int quickSort(void* toSort, int (*comparator)(void*, void*));
+
+int insertionSortComparator(const void* a, const void* b);
 
 int main(char* argc, char** argv) {
 
@@ -23,23 +29,65 @@ int main(char* argc, char** argv) {
   char* str4 = "reagan";
 
   int* value = (int*) 5;
+  int* value2 = (int*) 10;
+  int* value3 = (int*) 12;
+  int* value4 = (int*) 3;
 
   head->data = &value;
-  n2->data = str2;
-  n3->data = str3;
-  n4->data = str4;
+  n2->data = &value2;
+  n3->data = &value3;
+  n4->data = &value4;
 
   head->next = n2;
   n2->next = n3;
   n3->next = n4;
+
+  void* voidhead = head;
   
-  printLinkedList(head);
+  printLinkedList(voidhead);
+  insertionSort(voidhead, insertionSortComparator);
 
   return 0;
 }
 
-void printLinkedList(Node* head) {
-  Node* curr = head;
+int insertionSortComparator(const void* a, const void* b) { 
+  if(isalpha(*(char*)a)) {
+    printf("string insertion sort\n");
+  } else {
+    int t1 = *(int*)a;
+    int t2 = *(int*)b;
+
+    return t1 - t2;
+  }
+}
+
+int insertionSort(void* toSort, int (*comparator)(void*, void*)) {
+  Node* head = (Node*)toSort;
+  Node* dummy = malloc(sizeof(Node));
+  int* tval = -1111111;
+  dummy->data = &tval;
+  Node* cur = head;
+  Node* i = malloc(sizeof(Node));
+  Node* tmp = malloc(sizeof(Node));
+  while(cur != NULL) {
+    i = dummy;
+    while(i->next != NULL && comparator(i->next->data, cur->data) < 0) {
+      i = i->next;
+    }
+
+    tmp = cur->next;
+    cur->next = i->next;
+    i->next = cur;
+    cur = tmp;
+  }
+
+  void* t = dummy->next;
+  printLinkedList(t);
+}
+
+
+void printLinkedList(void* head) {
+  Node* curr = (Node*)head;
   while(curr != NULL) {
 
     /**
@@ -58,7 +106,7 @@ void printLinkedList(Node* head) {
     } else {
       printf("is digit! %d\n", *(int*)(curr->data));
     }
-    
+
     curr = curr->next;
   }
   printf("\n");
