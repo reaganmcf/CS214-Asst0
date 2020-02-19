@@ -29,10 +29,18 @@ int main(char* argc, char** argv) {
   char* str4 = "reagan";
 
   int* value = (int*) 5;
-  int* value2 = (int*) 10;
+  int* value2 = (int*) -10;
   int* value3 = (int*) 12;
   int* value4 = (int*) 3;
 
+
+  //FOR STRINGS
+  head->data = str1;
+  n2->data = str4;
+  n3->data = str3;
+  n4->data = str2;
+
+  //FOR INTEGERS
   head->data = &value;
   n2->data = &value2;
   n3->data = &value3;
@@ -52,7 +60,21 @@ int main(char* argc, char** argv) {
 
 int insertionSortComparator(const void* a, const void* b) { 
   if(isalpha(*(char*)a)) {
-    printf("string insertion sort\n");
+    char* t1 = (char*)a;
+    char* t2 = (char*)b;
+
+    while(*t1 != '\0') {
+      if(*t2 == '\0') return 1;
+      if(*t2 > *t1) return -1;
+      if(*t1 > *t2) return 1;
+
+      t1++;
+      t2++;
+    }
+
+    if(*t2 != '\0') return -1;
+
+    return 0;
   } else {
     int t1 = *(int*)a;
     int t2 = *(int*)b;
@@ -83,6 +105,10 @@ int insertionSort(void* toSort, int (*comparator)(void*, void*)) {
 
   void* t = dummy->next;
   printLinkedList(t);
+
+  free(dummy);
+  free(i);
+  free(tmp);
 }
 
 
