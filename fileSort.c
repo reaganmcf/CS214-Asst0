@@ -1,6 +1,12 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<fcntl.h>
+
+#include<unistd.h>
+
 // TOSHAN: 
 //   - LL helper functions (maybe)
 //   - reading cmd line input
@@ -15,10 +21,11 @@
 //   -  comparators
 
 typedef struct Node {
-  void* data;
-  struct Node* next;
+    void* data;
+    struct Node* next;
 } Node;
 
 int main(char* argc, char** argv) {
-  
+    int fd = open(argv[1], O_RDONLY);
+    
 }
