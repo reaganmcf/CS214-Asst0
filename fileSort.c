@@ -27,8 +27,11 @@ typedef struct Node {
 } Node;
 
 int isDelim(char curr);
+void printLL(Node* head);
 
 int main(char* argc, char** argv) {
+    char flag = argv[1][1];
+
     int fd = open(argv[2], O_RDONLY);
 
     // initialize LL here
@@ -48,7 +51,7 @@ int main(char* argc, char** argv) {
             char* tempToken = malloc(currTokenSize * sizeof(char));
 
             int i = 0;
-            for (i; i <= currTokenSize; i++) {
+            for (i; i < currTokenSize; i++) {
                 tempToken[i] = currToken[i];
             }
 
@@ -68,17 +71,39 @@ int main(char* argc, char** argv) {
                 currPtr = temp;
             }
         } else {
-            currToken[currTokenSize] = currChar;
-            currTokenSize++;
+            if (!isspace(currChar)) {
+                currToken[currTokenSize] = currChar;
+                currTokenSize++;
+            }
         }
     }
+
+    printLL(head);
+
+    currPtr = head;
+    while (currPtr != NULL) {
+        Node* temp = currPtr;
+        currPtr = currPtr -> next;
+        free(temp -> data);
+        free(temp);
+    }
+
+    return 0;
 }
 
 // checks if the current character is a delimiter
 int isDelim(char curr) {
-    if(curr == ','){
+    if (curr == ',') {
         return 1;
     } else {
         return 0;
+    }
+}
+
+void printLL(Node* head) {
+    Node* currPtr = head;
+    while (currPtr != NULL) {
+        printf("Data: %s\n", currPtr -> data);
+        currPtr = currPtr -> next;
     }
 }
