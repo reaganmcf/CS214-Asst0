@@ -3,6 +3,7 @@
 
 typedef struct Node {
     void* data;
+    int len;
     struct Node* next;
 } Node;
 
