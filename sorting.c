@@ -8,11 +8,15 @@ typedef struct Node {
 } Node;
 
 void printLinkedList(void* head);
+Node* getTailNode(Node* cur);
+Node* qs_partition(Node* head, Node* end, Node** newHead, Node** newEnd, int (*comparator)(void*, void*));
+Node* qs_recur(Node* head, Node* end, int (*comparator) (void*, void*));
 
 int insertionSort(void* toSort, int (*comparator)(void*, void*));
 int quickSort(void* toSort, int (*comparator)(void*, void*));
 
 int insertionSortComparator(const void* a, const void* b);
+int quickSortComparator(const void* a, const void* b);
 
 int main(char* argc, char** argv) {
 
@@ -40,7 +44,7 @@ int main(char* argc, char** argv) {
     n3 -> data = str3;
     n4 -> data = str2;
 
-    //FOR INTEGERS
+    // //FOR INTEGERS
     head -> data = &value;
     n2 -> data = &value2;
     n3 -> data = &value3;
@@ -53,7 +57,7 @@ int main(char* argc, char** argv) {
     void* voidhead = head;
   
     printLinkedList(voidhead);
-    insertionSort(voidhead, insertionSortComparator);
+    quickSort(voidhead, quickSortComparator);
 
     return 0;
 }
@@ -76,8 +80,33 @@ int insertionSortComparator(const void* a, const void* b) {
 
         return 0;
     } else {
-        int t1 = *(int*)a;
-        int t2 = *(int*)b;
+        int t1 = *(int*) a;
+        int t2 = *(int*) b;
+
+        return t1 - t2;
+    }
+}
+
+int quickSortComparator(const void* a, const void* b) {
+    if(isalpha(*(char*)a)) {
+        char* t1 = (char*) a;
+        char* t2 = (char*) b;
+
+        while(*t1 != '\0') {
+            if(*t2 == '\0') return 1;
+            if(*t2 > *t1) return -1;
+            if(*t1 > *t2) return 1;
+
+            t1++;
+            t2++;
+        }
+
+        if(*t2 != '\0') return -1;
+
+        return 0;
+    } else {
+        int t1 = *(int*) a;
+        int t2 = *(int*) b;
 
         return t1 - t2;
     }
@@ -111,6 +140,83 @@ int insertionSort(void* toSort, int (*comparator)(void*, void*)) {
     free(i);
     free(tmp);
 }
+
+int quickSort(void* toSort, int (*comparator)(void*, void*)) {
+    printf("quicksort started\n");
+    Node* head = (Node*) toSort;
+    Node* newHead = malloc(sizeof(Node));
+    
+    newHead = qs_recur(head, getTailNode(head), comparator);
+
+    printf("quicksort finished\n");
+    printLinkedList(newHead);
+}
+
+Node* getTailNode(Node* cur) {
+    while(cur != NULL && cur->next != NULL) {
+        cur = cur->next;
+    }
+    return cur;
+}
+
+Node* qs_partition(Node* head, Node* end, Node** newHead, Node** newEnd, int (*comparator)(void*, void*)) {
+    Node* pivot = end;
+    Node* prev = NULL, *cur = head, *tail = pivot;
+
+    while(cur != pivot) {
+        if(comparator(cur->data, pivot->data) < 0) {
+            if((*newHead) == NULL) {
+                (*newHead) = cur;
+            }
+            prev = cur;
+            cur = cur->next;
+        } else {
+            if(prev) {
+                prev->next = cur->next;
+            }
+            Node* tmp = cur->next;
+            cur->next = NULL;
+            tail->next = cur;
+            tail = cur;
+            cur = tmp;
+        }
+    }
+
+    if((*newHead) == NULL) {
+        (*newHead) = pivot;
+    }
+
+    (*newEnd) = tail;
+
+    return pivot;
+}
+
+Node* qs_recur(Node* head, Node* end, int (*comparator) (void*, void*)) {
+    if(!head || head == end) return head;
+
+    Node* newHead = NULL, *newEnd = NULL;
+
+    Node* pivot = qs_partition(head, end, &newHead, &newEnd, comparator);
+
+    if(newHead != pivot) {
+        Node* tmp = newHead;
+        while(tmp->next != pivot) {
+            tmp = tmp->next;
+        }
+        tmp->next = NULL;
+
+        newHead = qs_recur(newHead, tmp, comparator);
+
+        tmp = getTailNode(newHead);
+        tmp->next = pivot;
+    }
+
+    pivot->next = qs_recur(pivot->next, newEnd, comparator);
+
+    return newHead;
+}
+
+
 
 
 void printLinkedList(void* head) {
