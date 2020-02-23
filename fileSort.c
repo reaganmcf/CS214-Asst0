@@ -41,9 +41,31 @@ int insertionSortComparator(const void* a, const void* b);
 int quickSortComparator(const void* a, const void* b);
 
 int main(char* argc, char** argv) {
-    char flag = argv[1][1];
+    //check if there are 2 arguments
+    if (argc < 2) {
+        printf("FATAL ERROR: not enough arguments were passed in, please specify sorting flag and file name\n");
+        exit(0);
+    }
+    
+    //check flag
+    if (argv[1][0] != '-') {
+        printf("FATAL ERROR: please pass in a flag for type of sort as the first argument\n");
+        exit(0);
+    }
 
+    char flag = argv[1][1];
+    if (flag != 'q' && flag != 'i') {
+       printf("FATAL ERROR: please pass in either -i for insertion sort or -q for quick sort\n");
+       exit(0);
+    }
+
+    // open file
     int fd = open(argv[2], O_RDONLY);
+
+    if (fd == -1) {
+        printf("FATAL ERROR: the file that was passed in does not exist\n");
+        exit(0);
+    }
 
     // initialize LL here
     Node* head = malloc(sizeof(Node));
