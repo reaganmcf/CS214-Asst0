@@ -28,7 +28,17 @@ typedef struct Node {
 } Node;
 
 int isDelim(char curr);
-void printLL(Node* head);
+void printLL(void* head);
+
+Node* getTailNode(Node* cur);
+Node* qs_partition(Node* head, Node* end, Node** newHead, Node** newEnd, int (*comparator)(void*, void*));
+Node* qs_recur(Node* head, Node* end, int (*comparator) (void*, void*));
+
+int insertionSort(void* toSort, int (*comparator)(void*, void*));
+int quickSort(void* toSort, int (*comparator)(void*, void*));
+
+int insertionSortComparator(const void* a, const void* b);
+int quickSortComparator(const void* a, const void* b);
 
 int main(char* argc, char** argv) {
     char flag = argv[1][1];
@@ -79,16 +89,12 @@ int main(char* argc, char** argv) {
         }
     }
 
-    printLL(head);
+    //TODO: check input flags to see if the user wants insertionSort or quickSort
+    insertionSort((void*) head, insertionSortComparator);
+    // quickSort((void*) head, quickSortComparator);
 
-    currPtr = head;
-    while (currPtr != NULL) {
-        Node* temp = currPtr;
-        currPtr = currPtr -> next;
-        free(temp -> data);
-        free(temp);
-    }
 
+    //TODO: free mem
     return 0;
 }
 
@@ -101,10 +107,162 @@ int isDelim(char curr) {
     }
 }
 
-void printLL(Node* head) {
-    Node* currPtr = head;
+void printLL(void* head) {
+    Node* currPtr = (Node*)head;
     while (currPtr != NULL) {
         printf("Data: %s\n", currPtr -> data);
         currPtr = currPtr -> next;
     }
+}
+
+
+int insertionSortComparator(const void* a, const void* b) { 
+    if(isalpha(*(char*)a)) {
+        char* t1 = (char*)a;
+        char* t2 = (char*)b;
+
+        while(*t1 != '\0') {
+            if(*t2 == '\0') return 1;
+            if(*t2 > *t1) return -1;
+            if(*t1 > *t2) return 1;
+
+            t1++;
+            t2++;
+        }
+
+        if(*t2 != '\0') return -1;
+
+        return 0;
+    } else {
+        int t1 = *(int*) a;
+        int t2 = *(int*) b;
+
+        return t1 - t2;
+    }
+}
+
+int quickSortComparator(const void* a, const void* b) {
+    if(isalpha(*(char*)a)) {
+        char* t1 = (char*) a;
+        char* t2 = (char*) b;
+
+        while(*t1 != '\0') {
+            if(*t2 == '\0') return 1;
+            if(*t2 > *t1) return -1;
+            if(*t1 > *t2) return 1;
+
+            t1++;
+            t2++;
+        }
+
+        if(*t2 != '\0') return -1;
+
+        return 0;
+    } else {
+        int t1 = *(int*) a;
+        int t2 = *(int*) b;
+
+        return t1 - t2;
+    }
+}
+
+int insertionSort(void* toSort, int (*comparator)(void*, void*)) {
+    Node* head = (Node*)toSort;
+    Node* dummy = malloc(sizeof(Node));
+    int* tval = -1111111;
+    dummy -> data = &tval;
+    Node* cur = head;
+    Node* i = malloc(sizeof(Node));
+    Node* tmp = malloc(sizeof(Node));
+    while(cur != NULL) {
+        i = dummy;
+
+        while(i -> next != NULL && comparator(i -> next -> data, cur -> data) < 0) {
+            i = i -> next;
+        }
+
+        tmp = cur -> next;
+        cur -> next = i -> next;
+        i -> next = cur;
+        cur = tmp;
+    }
+
+    void* t = dummy -> next;
+    printLL(t);
+
+    free(dummy);
+    free(i);
+    free(tmp);
+}
+
+int quickSort(void* toSort, int (*comparator)(void*, void*)) {
+    Node* head = (Node*) toSort;
+    Node* newHead = malloc(sizeof(Node));
+    
+    newHead = qs_recur(head, getTailNode(head), comparator);
+    printLL(newHead);
+}
+
+Node* getTailNode(Node* cur) {
+    while(cur != NULL && cur->next != NULL) {
+        cur = cur->next;
+    }
+    return cur;
+}
+
+Node* qs_partition(Node* head, Node* end, Node** newHead, Node** newEnd, int (*comparator)(void*, void*)) {
+    Node* pivot = end;
+    Node* prev = NULL, *cur = head, *tail = pivot;
+
+    while(cur != pivot) {
+        if(comparator(cur->data, pivot->data) < 0) {
+            if((*newHead) == NULL) {
+                (*newHead) = cur;
+            }
+            prev = cur;
+            cur = cur->next;
+        } else {
+            if(prev) {
+                prev->next = cur->next;
+            }
+            Node* tmp = cur->next;
+            cur->next = NULL;
+            tail->next = cur;
+            tail = cur;
+            cur = tmp;
+        }
+    }
+
+    if((*newHead) == NULL) {
+        (*newHead) = pivot;
+    }
+
+    (*newEnd) = tail;
+
+    return pivot;
+}
+
+Node* qs_recur(Node* head, Node* end, int (*comparator) (void*, void*)) {
+    if(!head || head == end) return head;
+
+    Node* newHead = NULL, *newEnd = NULL;
+
+    Node* pivot = qs_partition(head, end, &newHead, &newEnd, comparator);
+
+    if(newHead != pivot) {
+        Node* tmp = newHead;
+        while(tmp->next != pivot) {
+            tmp = tmp->next;
+        }
+        tmp->next = NULL;
+
+        newHead = qs_recur(newHead, tmp, comparator);
+
+        tmp = getTailNode(newHead);
+        tmp->next = pivot;
+    }
+
+    pivot->next = qs_recur(pivot->next, newEnd, comparator);
+
+    return newHead;
 }
