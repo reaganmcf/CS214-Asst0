@@ -112,9 +112,13 @@ int main(char* argc, char** argv) {
     }
 
     //TODO: check input flags to see if the user wants insertionSort or quickSort
-    insertionSort((void*) head, insertionSortComparator);
-    // quickSort((void*) head, quickSortComparator);
 
+    if(flag == 'i') {
+        //insertion sort
+        insertionSort((void*) head, insertionSortComparator);
+    } else if(flag == 'q') {
+        quickSort((void*) head, quickSortComparator);
+    }
 
     //TODO: free mem
     return 0;
@@ -130,16 +134,36 @@ int isDelim(char curr) {
 }
 
 void printLL(void* head) {
-    Node* currPtr = (Node*)head;
-    while (currPtr != NULL) {
-        printf("Data: %s\n", currPtr -> data);
-        currPtr = currPtr -> next;
+    Node* curr = (Node*)head;
+    while(curr != NULL) {
+
+        /**
+        * To retrieve the String a void* points to:
+        *  - Cast to char*
+        *  - i.e (char*)(some_void*_pointer)
+        * 
+         *  To retrieve the int a void* points to:
+         *  - Cast to int*
+        *  - Dereference the int*
+        *  - i.e. *(int*)(some_void*_pointer)
+        */
+
+        if(isalpha(*(char*)(curr -> data))) { 
+            printf("is alphabetical! %s\n", (char*)(curr -> data));
+        } else {
+            printf("is digit! %d\n", *(int*)(curr -> data));
+        }
+
+        curr = curr -> next;
     }
+
+    printf("\n");
 }
 
 
 int insertionSortComparator(const void* a, const void* b) { 
     if(isalpha(*(char*)a)) {
+        printf("list is made of chars\n");
         char* t1 = (char*)a;
         char* t2 = (char*)b;
 
@@ -156,6 +180,7 @@ int insertionSortComparator(const void* a, const void* b) {
 
         return 0;
     } else {
+        printf("list is made of ints\n");
         int t1 = *(int*) a;
         int t2 = *(int*) b;
 
