@@ -77,6 +77,10 @@ int main(char* argc, char** argv) {
 
     char* currToken = malloc(1000 * sizeof(char));
     int currTokenSize = 0;
+    
+    // type = 1 -> inputing ints
+    // type = 2 -> inputing chars
+    int type = 0;
 
     while(1) {
         num_bytes = read(fd, &currChar, 1);
@@ -87,8 +91,15 @@ int main(char* argc, char** argv) {
             for (i; i < currTokenSize; i++) {
                 tempToken[i] = currToken[i];
             }
+            
+            if (isdigit(tempToken[0])) {
+                printf("is digit");
+                int tempIntToken = atoi(tempToken);
+                currPtr -> data = (void*)tempIntToken;
+            } else {
+                currPtr -> data = (void*)tempToken;
+            }
 
-            currPtr -> data = tempToken;
             currPtr -> len = currTokenSize;
 
             if (num_bytes == 0) {
@@ -150,7 +161,12 @@ void printLL(void* head) {
 
         if(isalpha(*(char*)(curr -> data))) { 
             printf("is alphabetical! %s\n", (char*)(curr -> data));
-        } else {
+       } else {
+            /*
+            char* temp2 = (char*)(curr -> data);
+            int* t1 = (atoi(temp2));
+            */
+
             printf("is digit! %d\n", *(int*)(curr -> data));
         }
 
@@ -208,6 +224,13 @@ int quickSortComparator(const void* a, const void* b) {
     } else {
         int t1 = *(int*) a;
         int t2 = *(int*) b;
+
+        /*
+        char* temp1 = (char*) a;
+        char* temp2 = (char*) b;
+        int t1 = (atoi(temp1));
+        int t2 = (atoi(temp2));
+        */
 
         return t1 - t2;
     }
