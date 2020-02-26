@@ -109,13 +109,9 @@ int main(char *argc, char **argv)
             }
             else
             {
-                int *tempIntToken = atoi(tempToken);
-                z = malloc(sizeof(int *));
-                // currPtr -> data = (void*)tempIntToken;
-                // printf("%d\n", tempIntToken);
-                z = (int *)rand();
-                printf("is digit in list builder %d\n", z);
-                currPtr->data = &z;
+                //We will handle conversions to ints in comparators. But, dynamically creating unique int pointer address' was creating unrealiable behavior
+                char* tempStr = tempToken;
+                currPtr->data = tempStr;
             }
 
             currPtr->len = currTokenSize;
@@ -145,10 +141,6 @@ int main(char *argc, char **argv)
             }
         }
     }
-
-    //TODO: check input flags to see if the user wants insertionSort or quickSort
-    printf("\n\n");
-    printLL((void *)head);
 
     if (flag == 'i')
     {
@@ -199,7 +191,7 @@ void printLL(void *head)
         char *checkingChar = (char *)(curr->data);
         int i;
         int isCompletelyAlpha = 1;
-        for (i = 0; i < strlen(checkingChar); i++)
+        for (i = 0; i < curr->len; i++)
         {
             if (!isalpha(checkingChar[i]))
             {
@@ -209,12 +201,12 @@ void printLL(void *head)
         }
         if (isCompletelyAlpha)
         {
-            printf("is alphabetical! %s\n", (char *)(curr->data));
+            printf("%s\n", (char *)(curr->data));
         }
         else
         {
-
-            printf("is digit! %d\n", *(int *)(curr->data));
+            char* str = (char*)(curr->data);
+            printf("%d\n", atoi(str));
         }
 
         curr = curr->next;
@@ -227,7 +219,7 @@ int insertionSortComparator(const void *a, const void *b)
 {
     if (isalpha(*(char *)a))
     {
-        printf("list is made of chars %d\n", *(int *)a);
+        //printf("list is made of chars %d\n", *(int *)a);
         char *t1 = (char *)a;
         char *t2 = (char *)b;
 
@@ -252,8 +244,8 @@ int insertionSortComparator(const void *a, const void *b)
     else
     {
         printf("list is made of ints\n");
-        int t1 = *(int *)a;
-        int t2 = *(int *)b;
+        int t1 = atoi((char*)a);
+        int t2 = atoi((char*)b);
 
         return t1 - t2;
     }
@@ -286,15 +278,8 @@ int quickSortComparator(const void *a, const void *b)
     }
     else
     {
-        int t1 = *(int *)a;
-        int t2 = *(int *)b;
-
-        /*
-        char* temp1 = (char*) a;
-        char* temp2 = (char*) b;
-        int t1 = (atoi(temp1));
-        int t2 = (atoi(temp2));
-        */
+        int t1 = atoi((char*)a);
+        int t2 = atoi((char*)b);
 
         return t1 - t2;
     }
