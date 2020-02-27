@@ -20,8 +20,7 @@
 //      - insertion sort
 //   -  comparators
 
-typedef struct Node
-{
+typedef struct Node {
     void *data;
     int len;
     struct Node *next;
@@ -40,26 +39,22 @@ int quickSort(void *toSort, int (*comparator)(void *, void *));
 int insertionSortComparator(const void *a, const void *b);
 int quickSortComparator(const void *a, const void *b);
 
-int main(char *argc, char **argv)
-{
+int main(char *argc, char **argv) {
 
     //check if there are 2 arguments
-    if (argc < 2)
-    {
+    if (argc < 2) {
         printf("FATAL ERROR: not enough arguments were passed in, please specify sorting flag and file name\n");
         exit(0);
     }
 
     //check flag
-    if (argv[1][0] != '-')
-    {
+    if (argv[1][0] != '-') {
         printf("FATAL ERROR: please pass in a flag for type of sort as the first argument\n");
         exit(0);
     }
 
     char flag = argv[1][1];
-    if (flag != 'q' && flag != 'i')
-    {
+    if (flag != 'q' && flag != 'i') {
         printf("FATAL ERROR: please pass in either -i for insertion sort or -q for quick sort\n");
         exit(0);
     }
@@ -67,11 +62,12 @@ int main(char *argc, char **argv)
     // open file
     int fd = open(argv[2], O_RDONLY);
 
-    if (fd == -1)
-    {
+    if (fd == -1) {
         printf("FATAL ERROR: the file that was passed in does not exist\n");
         exit(0);
     }
+
+    // TODO: check if tokens that are only whitespace should be dropped or kept at beginning
 
     // initialize LL here
     Node *head = malloc(sizeof(Node));
@@ -89,26 +85,20 @@ int main(char *argc, char **argv)
     int type = 0;
     int *z;
 
-    while (1)
-    {
+    while (1) {
         num_bytes = read(fd, &currChar, 1);
-        if (isDelim(currChar) || num_bytes == 0)
-        {
+        if (isDelim(currChar) || num_bytes == 0) {
             char *tempToken = malloc(currTokenSize * sizeof(char));
 
             int i = 0;
-            for (i; i < currTokenSize; i++)
-            {
+            for (i; i < currTokenSize; i++) {
                 tempToken[i] = currToken[i];
             }
 
-            if (isalpha(tempToken[0]))
-            {
+            if (isalpha(tempToken[0])) {
                 char *tempStr = tempToken;
                 currPtr->data = tempStr;
-            }
-            else
-            {
+            } else {
                 //We will handle conversions to ints in comparators. But, dynamically creating unique int pointer address' was creating unrealiable behavior
                 char* tempStr = tempToken;
                 currPtr->data = tempStr;
@@ -116,13 +106,10 @@ int main(char *argc, char **argv)
 
             currPtr->len = currTokenSize;
 
-            if (num_bytes == 0)
-            {
+            if (num_bytes == 0) {
                 free(currToken);
                 break;
-            }
-            else
-            {
+            } else {
                 free(currToken);
                 char *currToken = malloc(1000 * sizeof(char));
                 currTokenSize = 0;
@@ -131,24 +118,18 @@ int main(char *argc, char **argv)
                 currPtr->next = temp;
                 currPtr = temp;
             }
-        }
-        else
-        {
-            if (!isspace(currChar))
-            {
+        } else {
+            if (!isspace(currChar)) {
                 currToken[currTokenSize] = currChar;
                 currTokenSize++;
             }
         }
     }
 
-    if (flag == 'i')
-    {
+    if (flag == 'i') {
         //insertion sort
         insertionSort((void *)head, insertionSortComparator);
-    }
-    else if (flag == 'q')
-    {
+    } else if (flag == 'q') {
         quickSort((void *)head, quickSortComparator);
     }
 
@@ -157,31 +138,25 @@ int main(char *argc, char **argv)
 }
 
 // checks if the current character is a delimiter
-int isDelim(char curr)
-{
-    if (curr == ',')
-    {
+int isDelim(char curr) {
+    if (curr == ',') {
         return 1;
-    }
-    else
-    {
+    } else {
         return 0;
     }
 }
 
-void printLL(void *head)
-{
+void printLL(void *head) {
     Node *curr = (Node *)head;
-    while (curr != NULL)
-    {
+    while (curr != NULL) {
 
         /**
         * To retrieve the String a void* points to:
         *  - Cast to char*
         *  - i.e (char*)(some_void*_pointer)
-        * 
-         *  To retrieve the int a void* points to:
-         *  - Cast to int*
+        *
+        *  To retrieve the int a void* points to:
+        *  - Cast to int*
         *  - Dereference the int*
         *  - i.e. *(int*)(some_void*_pointer)
         */
@@ -191,20 +166,16 @@ void printLL(void *head)
         char *checkingChar = (char *)(curr->data);
         int i;
         int isCompletelyAlpha = 1;
-        for (i = 0; i < curr->len; i++)
-        {
-            if (!isalpha(checkingChar[i]))
-            {
+        for (i = 0; i < curr->len; i++) {
+            if (!isalpha(checkingChar[i])) {
                 isCompletelyAlpha = 0;
                 break;
             }
         }
-        if (isCompletelyAlpha)
-        {
+        
+        if (isCompletelyAlpha) {
             printf("%s\n", (char *)(curr->data));
-        }
-        else
-        {
+        } else {
             char* str = (char*)(curr->data);
             printf("%d\n", atoi(str));
         }
@@ -215,16 +186,13 @@ void printLL(void *head)
     printf("\n");
 }
 
-int insertionSortComparator(const void *a, const void *b)
-{
-    if (isalpha(*(char *)a))
-    {
+int insertionSortComparator(const void *a, const void *b) {
+    if (isalpha(*(char *)a)) {
         //printf("list is made of chars %d\n", *(int *)a);
         char *t1 = (char *)a;
         char *t2 = (char *)b;
 
-        while (*t1 != '\0')
-        {
+        while (*t1 != '\0') {
             if (*t2 == '\0')
                 return 1;
             if (*t2 > *t1)
@@ -240,9 +208,7 @@ int insertionSortComparator(const void *a, const void *b)
             return -1;
 
         return 0;
-    }
-    else
-    {
+    } else {
         printf("list is made of ints\n");
         int t1 = atoi((char*)a);
         int t2 = atoi((char*)b);
@@ -251,15 +217,12 @@ int insertionSortComparator(const void *a, const void *b)
     }
 }
 
-int quickSortComparator(const void *a, const void *b)
-{
-    if (isalpha(*(char *)a))
-    {
+int quickSortComparator(const void *a, const void *b) {
+    if (isalpha(*(char *)a)) {
         char *t1 = (char *)a;
         char *t2 = (char *)b;
 
-        while (*t1 != '\0')
-        {
+        while (*t1 != '\0') {
             if (*t2 == '\0')
                 return 1;
             if (*t2 > *t1)
@@ -275,9 +238,7 @@ int quickSortComparator(const void *a, const void *b)
             return -1;
 
         return 0;
-    }
-    else
-    {
+    } else {
         int t1 = atoi((char*)a);
         int t2 = atoi((char*)b);
 
@@ -285,8 +246,7 @@ int quickSortComparator(const void *a, const void *b)
     }
 }
 
-int insertionSort(void *toSort, int (*comparator)(void *, void *))
-{
+int insertionSort(void *toSort, int (*comparator)(void *, void *)) {
     Node *head = (Node *)toSort;
     Node *dummy = malloc(sizeof(Node));
     int *tval = -1111111;
@@ -294,12 +254,10 @@ int insertionSort(void *toSort, int (*comparator)(void *, void *))
     Node *cur = head;
     Node *i = malloc(sizeof(Node));
     Node *tmp = malloc(sizeof(Node));
-    while (cur != NULL)
-    {
+    while (cur != NULL) {
         i = dummy;
 
-        while (i->next != NULL && comparator(i->next->data, cur->data) < 0)
-        {
+        while (i->next != NULL && comparator(i->next->data, cur->data) < 0) {
             i = i->next;
         }
 
@@ -316,8 +274,7 @@ int insertionSort(void *toSort, int (*comparator)(void *, void *))
     free(tmp);
 }
 
-int quickSort(void *toSort, int (*comparator)(void *, void *))
-{
+int quickSort(void *toSort, int (*comparator)(void *, void *)) {
     Node *head = (Node *)toSort;
     Node *newHead = malloc(sizeof(Node));
 
@@ -325,37 +282,30 @@ int quickSort(void *toSort, int (*comparator)(void *, void *))
     printLL(newHead);
 }
 
-Node *getTailNode(Node *cur)
-{
-    while (cur != NULL && cur->next != NULL)
-    {
+Node *getTailNode(Node *cur) {
+    while (cur != NULL && cur->next != NULL) {
         cur = cur->next;
     }
     return cur;
 }
 
-Node *qs_partition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*comparator)(void *, void *))
-{
+Node *qs_partition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*comparator)(void *, void *)) {
     Node *pivot = end;
     Node *prev = NULL, *cur = head, *tail = pivot;
 
-    while (cur != pivot)
-    {
-        if (comparator(cur->data, pivot->data) < 0)
-        {
-            if ((*newHead) == NULL)
-            {
+    while (cur != pivot) {
+        if (comparator(cur->data, pivot->data) < 0) {
+            if ((*newHead) == NULL) {
                 (*newHead) = cur;
             }
+
             prev = cur;
             cur = cur->next;
-        }
-        else
-        {
-            if (prev)
-            {
+        } else {
+            if (prev) {
                 prev->next = cur->next;
             }
+
             Node *tmp = cur->next;
             cur->next = NULL;
             tail->next = cur;
@@ -364,8 +314,7 @@ Node *qs_partition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*c
         }
     }
 
-    if ((*newHead) == NULL)
-    {
+    if ((*newHead) == NULL) {
         (*newHead) = pivot;
     }
 
@@ -374,8 +323,7 @@ Node *qs_partition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*c
     return pivot;
 }
 
-Node *qs_recur(Node *head, Node *end, int (*comparator)(void *, void *))
-{
+Node *qs_recur(Node *head, Node *end, int (*comparator)(void *, void *)) {
     if (!head || head == end)
         return head;
 
@@ -383,13 +331,13 @@ Node *qs_recur(Node *head, Node *end, int (*comparator)(void *, void *))
 
     Node *pivot = qs_partition(head, end, &newHead, &newEnd, comparator);
 
-    if (newHead != pivot)
-    {
+    if (newHead != pivot) {
         Node *tmp = newHead;
-        while (tmp->next != pivot)
-        {
+
+        while (tmp->next != pivot) {
             tmp = tmp->next;
         }
+
         tmp->next = NULL;
 
         newHead = qs_recur(newHead, tmp, comparator);
