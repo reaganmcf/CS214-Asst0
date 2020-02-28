@@ -67,8 +67,6 @@ int main(char *argc, char **argv) {
         exit(0);
     }
 
-    // TODO: check if tokens that are only whitespace should be dropped or kept at beginning
-
     // initialize LL here
     Node *head = malloc(sizeof(Node));
     Node *currPtr = head;
@@ -95,14 +93,11 @@ int main(char *argc, char **argv) {
                 tempToken[i] = currToken[i];
             }
 
-            if (isalpha(tempToken[0])) {
-                char *tempStr = tempToken;
-                currPtr->data = tempStr;
-            } else {
-                //We will handle conversions to ints in comparators. But, dynamically creating unique int pointer address' was creating unrealiable behavior
-                char* tempStr = tempToken;
-                currPtr->data = tempStr;
-            }
+           
+            //We will handle conversions to ints in comparators.
+            //But, dynamically creating unique int pointer address' was creating unrealiable behavior
+            char* tempStr = tempToken;
+            currPtr->data = tempStr;
 
             currPtr->len = currTokenSize;
 
@@ -130,6 +125,7 @@ int main(char *argc, char **argv) {
         //insertion sort
         insertionSort((void *)head, insertionSortComparator);
     } else if (flag == 'q') {
+        //quick sort
         quickSort((void *)head, quickSortComparator);
     }
 
@@ -154,9 +150,9 @@ void printLL(void *head) {
         * To retrieve the String a void* points to:
         *  - Cast to char*
         *  - i.e (char*)(some_void*_pointer)
-        *
-        *  To retrieve the int a void* points to:
-        *  - Cast to int*
+        * 
+         *  To retrieve the int a void* points to:
+         *  - Cast to int*
         *  - Dereference the int*
         *  - i.e. *(int*)(some_void*_pointer)
         */
@@ -286,6 +282,7 @@ Node *getTailNode(Node *cur) {
     while (cur != NULL && cur->next != NULL) {
         cur = cur->next;
     }
+    
     return cur;
 }
 
@@ -333,11 +330,10 @@ Node *qs_recur(Node *head, Node *end, int (*comparator)(void *, void *)) {
 
     if (newHead != pivot) {
         Node *tmp = newHead;
-
-        while (tmp->next != pivot) {
+        while (tmp->next != pivot)
+        {
             tmp = tmp->next;
         }
-
         tmp->next = NULL;
 
         newHead = qs_recur(newHead, tmp, comparator);
