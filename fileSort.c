@@ -33,8 +33,8 @@ Node *getTailNode(Node *cur);
 Node *qs_partition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*comparator)(void *, void *));
 Node *qs_recur(Node *head, Node *end, int (*comparator)(void *, void *));
 
-int insertionSort(void *toSort, int (*comparator)(void *, void *));
-int quickSort(void *toSort, int (*comparator)(void *, void *));
+void insertionSort(void *toSort, int (*comparator)(void *, void *));
+void quickSort(void *toSort, int (*comparator)(void *, void *));
 
 int insertionSortComparator(const void *a, const void *b);
 int quickSortComparator(const void *a, const void *b);
@@ -86,13 +86,12 @@ int main(char *argc, char **argv) {
     while (1) {
         num_bytes = read(fd, &currChar, 1);
         if (isDelim(currChar) || num_bytes == 0) {
-            char *tempToken = malloc(currTokenSize * sizeof(char));
+            char* tempToken = malloc(currTokenSize * sizeof(char));
 
             int i = 0;
             for (i; i < currTokenSize; i++) {
                 tempToken[i] = currToken[i];
             }
-
            
             //We will handle conversions to ints in comparators.
             //But, dynamically creating unique int pointer address' was creating unrealiable behavior
@@ -130,6 +129,19 @@ int main(char *argc, char **argv) {
     }
 
     //TODO: free mem
+    Node *curr = (Node *)head;
+    while (curr != NULL) {
+        Node* temp = curr;
+        curr = curr -> next;
+
+        free(temp -> data);
+        free(temp);
+    }
+    
+    //free(curr);
+    free(head);
+    close(fd);
+
     return 0;
 }
 
@@ -178,8 +190,6 @@ void printLL(void *head) {
 
         curr = curr->next;
     }
-
-    printf("\n");
 }
 
 int insertionSortComparator(const void *a, const void *b) {
@@ -205,7 +215,7 @@ int insertionSortComparator(const void *a, const void *b) {
 
         return 0;
     } else {
-        printf("list is made of ints\n");
+        //printf("list is made of ints\n");
         int t1 = atoi((char*)a);
         int t2 = atoi((char*)b);
 
@@ -242,13 +252,13 @@ int quickSortComparator(const void *a, const void *b) {
     }
 }
 
-int insertionSort(void *toSort, int (*comparator)(void *, void *)) {
+void insertionSort(void *toSort, int (*comparator)(void *, void *)) {
     Node *head = (Node *)toSort;
     Node *dummy = malloc(sizeof(Node));
     int *tval = -1111111;
     dummy->data = &tval;
     Node *cur = head;
-    Node *i = malloc(sizeof(Node));
+    Node *i = dummy;
     Node *tmp = malloc(sizeof(Node));
     while (cur != NULL) {
         i = dummy;
@@ -270,11 +280,9 @@ int insertionSort(void *toSort, int (*comparator)(void *, void *)) {
     free(tmp);
 }
 
-int quickSort(void *toSort, int (*comparator)(void *, void *)) {
+void quickSort(void *toSort, int (*comparator)(void *, void *)) {
     Node *head = (Node *)toSort;
-    Node *newHead = malloc(sizeof(Node));
-
-    newHead = qs_recur(head, getTailNode(head), comparator);
+    Node *newHead = qs_recur(head, getTailNode(head), comparator);
     printLL(newHead);
 }
 
