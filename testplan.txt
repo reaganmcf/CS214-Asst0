@@ -1,0 +1,127 @@
+Testplan
+
+Test 1: Tested for insertion sort with characters file with no whitespaces.
+> ./a.out -i ./testChar
+  
+  if "./testChar" contains: hi,there,every,one
+  
+  output:
+  every
+  hi
+  one
+  there
+
+Test 2: Tested for insertion sort with integers file with no whitespaces.
+> ./a.out -i ./testInt
+  
+  if "./testInt" contains: 4,2,-3,1
+
+  output:
+  -3
+  1
+  2
+  4
+
+Test 3: Tested for quick sort with characters file with no whitespaces.
+> ./a.out -q ./testChar
+  
+  if "./testChar" contains: hi,there,every,one
+  
+  output:
+  every
+  hi
+  one
+  there
+
+Test 4: Tested for quick sort with integers file with no whitespaces.
+> ./a.out -q ./testInt
+  
+  if "./testInt" contains: 4,2,-3,1
+
+  output:
+  -3
+  1
+  2
+  4
+
+Test 5: Tested for insertion sort with characters file with whitespaces.
+> ./a.out -i ./testCharWhite
+  
+  if "./testCharWhite" contains: hi,    there , every   ,
+                                    one
+  
+  output:
+  every
+  hi
+  one
+  there
+
+Test 6: Tested for insertion sort with integers file with whitespaces.
+> ./a.out -i ./testIntWhite
+  
+  if "./testIntWhite" contains: 4,       2 ,
+                                -3   , 1
+
+  output:
+  -3
+  1
+  2
+  4
+
+Test 7: Tested for quick sort with characters file with whitespaces.
+> ./a.out -q ./testCharWhite
+  
+  if "./testCharWhite" contains: hi,    there , every   ,
+                                    one
+  
+  output:
+  every
+  hi
+  one
+  there
+
+Test 8: Tested for quick sort with integers file with whitespaces.
+> ./a.out -q ./testIntWhite
+  
+  if "./testIntWhite" contains: 4,       2 ,
+                                -3   , 1
+
+  output:
+  -3
+  1
+  2
+  4
+
+Test 9: Tested for not enough arguments passed in.
+> ./a.out
+  
+  output:
+  FATAL ERROR: not enough arguments were passed in, please specify sorting flag and file name
+
+Test 10: Tested for sorting flag not being passed in as the first argument.
+> ./a.out ./testChar -i
+  
+  output:
+  FATAL ERROR: please pass in a flag for type of sort as the first argument
+
+Test 11: Tested for incorrect sorting flag being passed in.
+> ./a.out -w ./testChar
+  
+  output:
+  FATAL ERROR: please pass in either -i for insertion sort or -q for quick sort
+
+Test 12: Tested for passing in a file that does not exist.
+> ./a.out -i ./fakeFile
+  
+  if "./fakeFile" does not exist
+
+  output:
+  FATAL ERROR: the file that was passed in does not exist
+
+Test 13: Tested for passing in an empty file.
+> ./a.out -i ./emptyFile
+  
+  if "./emptyFile" contains: ""
+
+  output:
+  WARNING: The file that was given is empty

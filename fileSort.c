@@ -5,18 +5,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// TOSHAN:
-//   - LL helper functions (maybe)
-//   - reading cmd line input
-//      - checking flags
-//      - opening files
-//   - add all tokens into linked list
-//
-// REAGAN:
-//   - sorting
-//      - quicksort
-//      - insertion sort
-//   -  comparators
 
 typedef struct Node {
     void *data;
@@ -76,14 +64,17 @@ int main(char *argc, char **argv) {
     char *currToken = malloc(1000 * sizeof(char));
     int currTokenSize = 0;
 
-    // type = 1 -> inputing ints
-    // type = 2 -> inputing chars
-    int type = 0;
-    int *z;
-
     while (1) {
         num_bytes = read(fd, &currChar, 1);
         if (isDelim(currChar) || num_bytes == 0) {
+            if (num_bytes == 0 && currPtr == head) {
+                printf("WARNING: The file that was given is empty\n");
+                free(currToken);
+                free(head);
+                close(fd);
+                return 0;
+            }
+
             char* tempToken = malloc(currTokenSize * sizeof(char));
 
             int i = 0;
@@ -127,7 +118,7 @@ int main(char *argc, char **argv) {
     }
 
     //TODO: free mem
-    Node *curr = (Node *)head;
+    Node* curr = (Node*)head;
     while (curr != NULL) {
         Node* temp = curr;
         curr = curr -> next;
