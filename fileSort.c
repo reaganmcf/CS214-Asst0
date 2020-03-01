@@ -16,8 +16,8 @@ int isDelim(char curr);
 void printLL(void *head);
 
 Node *getTailNode(Node *cur);
-Node *qs_partition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*comparator)(void *, void *));
-Node *qs_recur(Node *head, Node *end, int (*comparator)(void *, void *));
+Node *quickSortPartition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*comparator)(void *, void *));
+Node *qucikSortRecurisve(Node *head, Node *end, int (*comparator)(void *, void *));
 
 void insertionSort(void *toSort, int (*comparator)(void *, void *));
 void quickSort(void *toSort, int (*comparator)(void *, void *));
@@ -351,35 +351,35 @@ void insertionSort(void *toSort, int (*comparator)(void *, void *))
     Node *dummy = malloc(sizeof(Node));
     int *tval = -1111111;
     dummy->data = &tval;
-    Node *cur = head;
+    Node *curr = head;
     Node *i = dummy;
-    Node *tmp = malloc(sizeof(Node));
-    while (cur != NULL)
+    Node *tempNode = malloc(sizeof(Node));
+    while (curr != NULL)
     {
         i = dummy;
 
-        while (i->next != NULL && comparator(i->next->data, cur->data) < 0)
+        while (i->next != NULL && comparator(i->next->data, curr->data) < 0)
         {
             i = i->next;
         }
 
-        tmp = cur->next;
-        cur->next = i->next;
-        i->next = cur;
-        cur = tmp;
+        tempNode = curr->next;
+        curr->next = i->next;
+        i->next = curr;
+        curr = tempNode;
     }
 
     void *t = dummy->next;
     printLL(t);
 
     free(dummy);
-    free(tmp);
+    free(tempNode);
 }
 
 void quickSort(void *toSort, int (*comparator)(void *, void *))
 {
     Node *head = (Node *)toSort;
-    Node *newHead = qs_recur(head, getTailNode(head), comparator);
+    Node *newHead = qucikSortRecurisve(head, getTailNode(head), comparator);
     printLL(newHead);
 }
 
@@ -393,74 +393,69 @@ Node *getTailNode(Node *cur)
     return cur;
 }
 
-Node *qs_partition(Node *head, Node *end, Node **newHead, Node **newEnd, int (*comparator)(void *, void *))
+Node *quickSortPartition(Node *head, Node *end, Node **newHeadNode, Node **newEndNode, int (*comparator)(void *, void *))
 {
     Node *pivot = end;
-    Node *prev = NULL, *cur = head, *tail = pivot;
+    Node *curr = head;
+    Node *tail = pivot;
+    Node *prev = NULL;
 
-    while (cur != end)
+    while (curr != end)
     {
-        if (comparator(cur->data, pivot->data) < 0)
+        if (comparator(curr->data, pivot->data) < 0)
         {
-            if ((*newHead) == NULL)
-            {
-                (*newHead) = cur;
-            }
+            if (*newHeadNode == NULL)
+                *newHeadNode = curr;
 
-            prev = cur;
-            cur = cur->next;
+            prev = curr;
+            curr = curr->next;
         }
         else
         {
             if (prev)
-            {
-                prev->next = cur->next;
-            }
+                prev->next = curr->next;
 
-            Node *tmp = cur->next;
-            cur->next = NULL;
-            tail->next = cur;
-            tail = cur;
-            cur = tmp;
+            Node *tempNode = curr->next;
+            curr->next = NULL;
+            tail->next = curr;
+            tail = curr;
+            curr = tempNode;
         }
     }
 
-    if ((*newHead) == NULL)
-    {
-        (*newHead) = pivot;
-    }
+    if (*newHeadNode == NULL)
+        *newHeadNode = pivot;
 
-    (*newEnd) = tail;
+    *newEndNode = tail;
 
     return pivot;
 }
 
-Node *qs_recur(Node *head, Node *end, int (*comparator)(void *, void *))
+Node *qucikSortRecurisve(Node *head, Node *end, int (*comparator)(void *, void *))
 {
     if (head == NULL || head == end)
         return head;
 
-    //Gotta create new pointers so that we can track left and right lists of pivot
-    Node *newHead = NULL, *newEnd = NULL;
+    Node *newHeadNode = NULL;
+    Node *newEndNode = NULL;
 
-    Node *pivot = qs_partition(head, end, &newHead, &newEnd, comparator);
+    Node *pivot = quickSortPartition(head, end, &newHeadNode, &newEndNode, comparator);
 
-    if (newHead != pivot)
+    if (newHeadNode != pivot)
     {
-        Node *tmp = newHead;
-        while (tmp->next != pivot)
-        {
-            tmp = tmp->next;
-        }
-        tmp->next = NULL;
+        Node *tempNode = newHeadNode;
+        while (tempNode->next != pivot)
+            tempNode = tempNode->next;
 
-        newHead = qs_recur(newHead, tmp, comparator);
+        tempNode->next = NULL;
 
-        tmp = getTailNode(newHead);
-        tmp->next = pivot;
+        newHeadNode = qucikSortRecurisve(newHeadNode, tempNode, comparator);
+
+        tempNode = getTailNode(newHeadNode);
+        tempNode->next = pivot;
     }
 
-    pivot->next = qs_recur(pivot->next, newEnd, comparator);
+    pivot->next = qucikSortRecurisve(pivot->next, newEndNode, comparator);
 
-    return newHead;
+    return newHeadNode;
 }
